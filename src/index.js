@@ -2,139 +2,123 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
-import reportWebVitals from './reportWebVitals';
-class Square extends React.Component {
+
+//Square component class
+// class Square extends React.Component {
   
-    render() {
-      // console.log('Square: ',this)
-      return (
-        <button 
-          className="square"
-          onClick={this.props.onClick}
-          // onClick={()=>{this.setState({value: this.props.value})}}
-        >
-          {this.props.value}
-        </button>
+//     render() {
+//       return (
+//         <button 
+//           className="square"
+//           onClick={this.props.onClick}
+//           // onClick={()=>{this.setState({value: this.props.value})}}
+//         >
+//           {this.props.value}
+//         </button>
   
-      );
-    }
+//       );
+//     }
+// }
+
+//Square function component
+function Square(props){
+  return (
+    <button 
+      className="square"
+      onClick={props.onClick}
+    >
+      {props.value}
+    </button>
+  );  
+}
+  
+class Board extends React.Component {
+  
+  constructor(props) {
+    super(props);
+    this.state = {
+      squares: Array(9).fill(null),
+      player:null
+    };
   }
   
-  class Board extends React.Component {
+  handleClick(i) {
+    const squares = this.state.squares.slice();
+    let player = this.state.player;
     
-    constructor(props) {
-      super(props);
-      this.state = {
-        squares: Array(9).fill(null),
-        player:null
-      };
+    if(this.state.player===null || player===1){
+      squares[i] = 'X';
+      player=2;
+      console.log("old state:", this.state);
+      this.setState({squares: squares, player: player}, () => {
+        console.log("New state:", this.state);
+      });
+    }else{
+      squares[i] = 'O';
+      player=1;
+      console.log("old state:", this.state);
+      this.setState({squares: squares, player: player}, () => {
+        console.log("New state:", this.state);
+      })
     }
-   
-    handleClick(i) {
-      const squares = this.state.squares.slice();
-      let player = this.state.player;
-      // console.log(" state:",  this.state.player);
-      // squares[i] = 'X';
-      // player=2;
-      // console.log("old state:", this.state);
-      // this.setState({squares: squares, player: player}, () => {
-      //   console.log("New state:", this.state);
-      // })
-      if(this.state.player===null || player===1){
-        squares[i] = 'X';
-        player=2;
-        console.log("old state:", this.state);
-        this.setState({squares: squares, player: player}, () => {
-          console.log("New state:", this.state);
-        });
-        
-        
-      }else{
-        squares[i] = 'O';
-        player=1;
-        console.log("old state:", this.state);
-        this.setState({squares: squares, player: player}, () => {
-          console.log("New state:", this.state);
-        })
-      }
-      // else{
-      //   squares[i] = 'O';
-      //   player=1;
-      //   console.log("O Log:", i % 2);
-      //   this.setState({squares: squares, player:player});
-      // }
-
-
-      // squares[i] = 'X';
-      // this.setState({squares: squares});
-      // console.log('returned: ',player)
+  }
+  
+  renderSquare(i) {
+    return <Square 
+                  value={this.state.squares[i]} 
+                  onClick={() => this.handleClick(i)}
+                  />; //value={i}
     }
 
-
-
-
+  render() {
+    let nextPlayer = this.state.player===null || this.state.player===1?'X':'O'
+    const status = `Next player: ${nextPlayer}`;
+    console.log('Board: ',this.state)
     
-    renderSquare(i) {
-      return <Square 
-                    value={this.state.squares[i]} 
-                    onClick={() => this.handleClick(i)}
-                    />; //value={i}
-      }
-  
-    render() {
-      let nextPlayer = this.state.player===null || this.state.player===1?'X':'O'
-      const status = `Next player: ${nextPlayer}`;
-      console.log('Board: ',this.state)
-      
-      return (
-        <div>
-          <div className="status">{status}</div>
-          <div className="board-row">
-            {this.renderSquare(0)}
-            {this.renderSquare(1)}
-            {this.renderSquare(2)}
-          </div>
-          <div className="board-row">
-            {this.renderSquare(3)}
-            {this.renderSquare(4)}
-            {this.renderSquare(5)}
-          </div>
-          <div className="board-row">
-            {this.renderSquare(6)}
-            {this.renderSquare(7)}
-            {this.renderSquare(8)}
-          </div>
+    return (
+      <div>
+        <div className="status">Status: {status}</div>
+        <div className="board-row">
+          {this.renderSquare(0)}
+          {this.renderSquare(1)}
+          {this.renderSquare(2)}
         </div>
-      );
-    }
-  }
-  
-  class Game extends React.Component {
-    render() {
-      return (
-        <div className="game">
-          <div className="game-board">
-            <Board />
-          </div>
-          <div className="game-info">
-            <div>{/* status */}</div>
-            <ol>{/* TODO */}</ol>
-          </div>
+        <div className="board-row">
+          {this.renderSquare(3)}
+          {this.renderSquare(4)}
+          {this.renderSquare(5)}
         </div>
-      );
-    }
+        <div className="board-row">
+          {this.renderSquare(6)}
+          {this.renderSquare(7)}
+          {this.renderSquare(8)}
+        </div>
+      </div>
+    );
   }
+}
+  
+class Game extends React.Component {
+  render() {
+    return (
+      <div className="game">
+        <div className="game-board">
+          <Board />
+        </div>
+        <div className="game-info">
+          <div>{/* status */}</div>
+          <ol>{/* TODO */}</ol>
+        </div>
+      </div>
+    );
+  }
+}
 
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <React.StrictMode>
+  //<React.StrictMode>
     <Game />
-  </React.StrictMode>
+  //</React.StrictMode>
 );
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
